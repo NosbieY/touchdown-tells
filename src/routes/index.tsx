@@ -149,6 +149,7 @@ function Index() {
                     game={g}
                     prediction={predictGame(g, ratings)}
                     result={results[g.id]}
+                    market={kalshi?.lines[pairKey(g.home, g.away)]}
                     onSaveResult={saveResult}
                     onClearResult={clearResult}
                   />
