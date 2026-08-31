@@ -50,7 +50,7 @@ export function RatingsTable({ ratings, overrides, onOverride }: Props) {
             </thead>
             <tbody>
               {sorted.map((t, i) => {
-                const r = ratings[t.abbr];
+                const r = ratings[t.abbr]!;
                 const base = overrides[t.abbr] ?? { off: t.off, def: t.def };
                 return (
                   <tr key={t.abbr} className="border-b border-border/50">
