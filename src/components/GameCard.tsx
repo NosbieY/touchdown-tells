@@ -2,11 +2,13 @@ import { useState } from "react";
 import { TEAM_MAP } from "@/data/teams";
 import type { Game } from "@/data/schedule";
 import type { Prediction, Result } from "@/lib/model";
+import type { MarketLine } from "@/lib/kalshi.functions";
 
 interface Props {
   game: Game;
   prediction: Prediction;
   result?: Result | undefined;
+  market?: MarketLine | undefined;
   onSaveResult: (gameId: string, result: Result) => void;
   onClearResult: (gameId: string) => void;
 }
@@ -48,7 +50,7 @@ function TeamRow({
   );
 }
 
-export function GameCard({ game, prediction, result, onSaveResult, onClearResult }: Props) {
+export function GameCard({ game, prediction, result, market, onSaveResult, onClearResult }: Props) {
   const [editing, setEditing] = useState(false);
   const [homeScore, setHomeScore] = useState(result ? String(result.homeScore) : "");
   const [awayScore, setAwayScore] = useState(result ? String(result.awayScore) : "");
@@ -119,6 +121,24 @@ export function GameCard({ game, prediction, result, onSaveResult, onClearResult
           style={{ backgroundColor: TEAM_MAP[game.home]!.color }}
         />
       </div>
+
+      {market && (
+        <div className="mt-3 flex items-center gap-2 rounded-md bg-secondary/60 px-3 py-2 text-xs">
+          <span className="font-semibold tracking-widest text-muted-foreground uppercase">
+            Kalshi
+          </span>
+          <span className="font-display text-sm font-bold tracking-wide">
+            {market.favorite} favorite
+          </span>
+          <span className="text-muted-foreground">
+            {market.underdog} dog
+          </span>
+          <span className="ml-auto tabular-nums">
+            {game.away} {((market.probs[game.away] ?? 0) * 100).toFixed(0)}% ·{" "}
+            {game.home} {((market.probs[game.home] ?? 0) * 100).toFixed(0)}%
+          </span>
+        </div>
+      )}
 
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
         {prediction.reasons.join(" · ")}
