@@ -9,7 +9,7 @@ export interface Game {
 
 const N = 32;
 const ROUNDS = 18;
-const BYE_WEEKS = [5, 6, 7, 8, 9, 10, 11, 12]; // 4 teams off each week
+const BYE_WEEKS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]; // up to 4 teams off each week
 const GAMES_ON_BYE_WEEK = 2; // games removed per bye week
 
 /**
