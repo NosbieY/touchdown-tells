@@ -6,6 +6,7 @@ A single-page app that shows, week by week, who is most likely to win each game 
 
 - **Week selector** (Weeks 1-18) with every matchup for that week.
 - **Per-game card**: predicted winner, win probability, projected score, and a short "why" (e.g. offense edge, defensive edge, home field).
+- **Upset Watch**: a section for the selected week highlighting the underdog most likely to win — every game whose underdog has at least ~30% win probability, ranked by probability, with the top pick flagged as the "upset alert" and a note on what drives it (e.g. close ratings, home field for the dog, strong defensive matchup).
 - **Result entry**: type in the final score of a played game; the model updates both teams' ratings before the next week's picks.
 - **Ratings table**: current offensive rating, defensive rating, and overall power rating for all 32 teams, editable so you can tune the baseline.
 - Everything you enter is saved in your browser, with a reset button to return to the baseline.
