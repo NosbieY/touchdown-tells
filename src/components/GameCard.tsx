@@ -6,7 +6,7 @@ import type { Prediction, Result } from "@/lib/model";
 interface Props {
   game: Game;
   prediction: Prediction;
-  result?: Result;
+  result?: Result | undefined;
   onSaveResult: (gameId: string, result: Result) => void;
   onClearResult: (gameId: string) => void;
 }
@@ -22,7 +22,7 @@ function TeamRow({
   prob: number;
   bold: boolean;
 }) {
-  const team = TEAM_MAP[abbr];
+  const team = TEAM_MAP[abbr]!;
   return (
     <div className="flex items-center gap-3">
       <span
@@ -105,12 +105,12 @@ export function GameCard({ game, prediction, result, onSaveResult, onClearResult
           className="h-full"
           style={{
             width: `${prediction.awayProb * 100}%`,
-            backgroundColor: TEAM_MAP[game.away].color,
+            backgroundColor: TEAM_MAP[game.away]!.color,
           }}
         />
         <div
           className="h-full flex-1"
-          style={{ backgroundColor: TEAM_MAP[game.home].color }}
+          style={{ backgroundColor: TEAM_MAP[game.home]!.color }}
         />
       </div>
 

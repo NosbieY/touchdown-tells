@@ -11,13 +11,13 @@ interface Props {
 export function RatingsTable({ ratings, overrides, onOverride }: Props) {
   const [open, setOpen] = useState(false);
   const sorted = [...TEAMS].sort(
-    (a, b) => ratings[b.abbr].off + ratings[b.abbr].def - (ratings[a.abbr].off + ratings[a.abbr].def),
+    (a, b) => ratings[b.abbr]!.off + ratings[b.abbr]!.def - (ratings[a.abbr]!.off + ratings[a.abbr]!.def),
   );
 
   const setField = (abbr: string, field: "off" | "def", raw: string) => {
     const val = parseFloat(raw);
     if (Number.isNaN(val)) return;
-    const base = overrides[abbr] ?? { off: TEAM_MAP[abbr].off, def: TEAM_MAP[abbr].def };
+    const base = overrides[abbr] ?? { off: TEAM_MAP[abbr]!.off, def: TEAM_MAP[abbr]!.def };
     onOverride(abbr, { ...base, [field]: val });
   };
 

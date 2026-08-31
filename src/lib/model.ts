@@ -21,7 +21,7 @@ export function baselineRatings(overrides: Record<string, Rating> = {}): Ratings
     const o = overrides[abbr];
     r[abbr] = o
       ? { off: o.off, def: o.def }
-      : { off: TEAM_MAP[abbr].off, def: TEAM_MAP[abbr].def };
+      : { off: TEAM_MAP[abbr]!.off, def: TEAM_MAP[abbr]!.def };
   }
   return r;
 }
@@ -38,8 +38,8 @@ export interface Prediction {
 }
 
 export function predictGame(game: Game, ratings: Ratings): Prediction {
-  const h = ratings[game.home];
-  const a = ratings[game.away];
+  const h = ratings[game.home]!;
+  const a = ratings[game.away]!;
   const expHome = LEAGUE_AVG_SCORE + h.off - a.def;
   const expAway = LEAGUE_AVG_SCORE + a.off - h.def;
   const margin = expHome - expAway + HOME_FIELD_EDGE;
@@ -76,8 +76,8 @@ const K = 0.35;
 
 /** Elo-style update: shift each unit toward what actually happened. */
 export function applyResult(ratings: Ratings, game: Game, result: Result): void {
-  const h = ratings[game.home];
-  const a = ratings[game.away];
+  const h = ratings[game.home]!;
+  const a = ratings[game.away]!;
   const expHome = LEAGUE_AVG_SCORE + h.off - a.def + HOME_FIELD_EDGE / 2;
   const expAway = LEAGUE_AVG_SCORE + a.off - h.def - HOME_FIELD_EDGE / 2;
 
@@ -131,8 +131,8 @@ export function upsetWatch(week: number, games: Game[], ratings: Ratings): Upset
     const notes: string[] = [];
     if (p.underdog === game.home) notes.push("underdog at home");
     if (Math.abs(p.margin) < 3) notes.push("ratings nearly even");
-    const dog = ratings[p.underdog];
-    const fav = ratings[p.favorite];
+    const dog = ratings[p.underdog]!;
+    const fav = ratings[p.favorite]!;
     if (dog.def > fav.def + 1) notes.push("underdog has the better defense");
     if (dog.off > fav.off) notes.push("underdog actually grades out better on offense");
     candidates.push({
