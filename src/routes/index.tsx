@@ -89,6 +89,13 @@ function Index() {
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">
+            <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium">
+              {kalshi?.error
+                ? "Kalshi markets unavailable"
+                : marketCount > 0
+                  ? `${marketCount} Kalshi market${marketCount === 1 ? "" : "s"} live`
+                  : "Loading Kalshi markets…"}
+            </span>
             {resultCount > 0 && (
               <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium">
                 {resultCount} result{resultCount === 1 ? "" : "s"} entered
