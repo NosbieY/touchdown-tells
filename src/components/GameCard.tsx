@@ -2,11 +2,13 @@ import { useState } from "react";
 import { TEAM_MAP } from "@/data/teams";
 import type { Game } from "@/data/schedule";
 import type { Prediction, Result } from "@/lib/model";
+import type { MarketLine } from "@/lib/kalshi.functions";
 
 interface Props {
   game: Game;
   prediction: Prediction;
   result?: Result | undefined;
+  market?: MarketLine | undefined;
   onSaveResult: (gameId: string, result: Result) => void;
   onClearResult: (gameId: string) => void;
 }
