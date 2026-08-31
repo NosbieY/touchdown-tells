@@ -48,38 +48,45 @@ function circleRounds(): RawGame[][] {
   return rounds;
 }
 
-/** Pick bye games with backtracking so every team gets exactly one bye. */
-function assignByes(rounds: RawGame[][], seed: number): Set<string> {
-  const rand = mulberry32(seed);
-  const removed = new Set<string>();
-  const byed = new Set<number>();
+/**
+ * Pick 16 disjoint games in the bye weeks to remove (one bye per team,
+ * at most 2 removed games per week). Seeded greedy with retries.
+ */
+function assignByes(rounds: RawGame[][], baseSeed: number): Set<string> {
   const key = (w: number, g: RawGame) => `${w}:${g.a}-${g.b}`;
+  for (let seed = baseSeed; seed < baseSeed + 5000; seed++) {
+    const rand = mulberry32(seed);
+    const removed = new Set<string>();
+    const byed = new Set<number>();
+    const perWeek = new Map<number, number>();
+    const order = Array.from({ length: N }, (_, i) => i).sort(() => rand() - 0.5);
+    let failed = false;
 
-  const ok = (weekIdx: number): boolean => {
-    if (weekIdx === BYE_WEEKS.length) return byed.size === N;
-    const week = BYE_WEEKS[weekIdx] - 1;
-    const candidates = rounds[week].filter((g) => !byed.has(g.a) && !byed.has(g.b));
-    const shuffled = [...candidates].sort(() => rand() - 0.5);
-    for (let i = 0; i < shuffled.length; i++) {
-      for (let j = i + 1; j < shuffled.length; j++) {
-        const g1 = shuffled[i];
-        const g2 = shuffled[j];
-        const teams = [g1.a, g1.b, g2.a, g2.b];
-        if (new Set(teams).size !== 4) continue;
-        teams.forEach((t) => byed.add(t));
-        removed.add(key(week, g1));
-        removed.add(key(week, g2));
-        if (ok(weekIdx + 1)) return true;
-        teams.forEach((t) => byed.delete(t));
-        removed.delete(key(week, g1));
-        removed.delete(key(week, g2));
+    for (const team of order) {
+      if (byed.has(team)) continue;
+      const candidates: { w: number; g: RawGame }[] = [];
+      for (const bw of BYE_WEEKS) {
+        const w = bw - 1;
+        if ((perWeek.get(w) ?? 0) >= GAMES_ON_BYE_WEEK) continue;
+        for (const g of rounds[w]) {
+          if (g.a !== team && g.b !== team) continue;
+          const other = g.a === team ? g.b : g.a;
+          if (!byed.has(other)) candidates.push({ w, g });
+        }
       }
+      if (candidates.length === 0) {
+        failed = true;
+        break;
+      }
+      const pick = candidates[Math.floor(rand() * candidates.length)];
+      removed.add(key(pick.w, pick.g));
+      byed.add(pick.g.a);
+      byed.add(pick.g.b);
+      perWeek.set(pick.w, (perWeek.get(pick.w) ?? 0) + 1);
     }
-    return false;
-  };
-
-  if (!ok(0)) throw new Error("bye assignment failed");
-  return removed;
+    if (!failed && byed.size === N) return removed;
+  }
+  throw new Error("bye assignment failed");
 }
 
 function buildSchedule(): Game[] {
