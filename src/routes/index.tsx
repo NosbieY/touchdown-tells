@@ -52,6 +52,14 @@ function Index() {
     () => (ratings ? upsetWatch(week, games, ratings) : []),
     [ratings, week, games],
   );
+  const { data: kalshi } = useQuery({
+    queryKey: ["kalshi-lines"],
+    queryFn: () => getKalshiLines(),
+    staleTime: 60_000,
+    refetchInterval: 120_000,
+  });
+  const marketCount = kalshi ? Object.keys(kalshi.lines).length : 0;
+
   const tableRatings = useMemo(
     () => (ready ? finalRatings(results, overrides) : null),
     [ready, results, overrides],
