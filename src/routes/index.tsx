@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { RotateCcw } from "lucide-react";
+import { getKalshiLines, pairKey } from "@/lib/kalshi.functions";
 import { WEEKS, gamesForWeek, byeTeams } from "@/data/schedule";
 import { TEAM_MAP } from "@/data/teams";
 import {
