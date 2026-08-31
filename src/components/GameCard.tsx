@@ -122,6 +122,24 @@ export function GameCard({ game, prediction, result, market, onSaveResult, onCle
         />
       </div>
 
+      {market && (
+        <div className="mt-3 flex items-center gap-2 rounded-md bg-secondary/60 px-3 py-2 text-xs">
+          <span className="font-semibold tracking-widest text-muted-foreground uppercase">
+            Kalshi
+          </span>
+          <span className="font-display text-sm font-bold tracking-wide">
+            {market.favorite} favorite
+          </span>
+          <span className="text-muted-foreground">
+            {market.underdog} dog
+          </span>
+          <span className="ml-auto tabular-nums">
+            {game.away} {((market.probs[game.away] ?? 0) * 100).toFixed(0)}% ·{" "}
+            {game.home} {((market.probs[game.home] ?? 0) * 100).toFixed(0)}%
+          </span>
+        </div>
+      )}
+
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
         {prediction.reasons.join(" · ")}
       </p>
