@@ -66,10 +66,16 @@ export function GameCard({ game, prediction, result, onSaveResult, onClearResult
 
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
           {game.away} @ {game.home}
+          {game.intl && (
+            <span className="ml-2 rounded-full bg-chart-2/15 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-chart-2 normal-case">
+              {game.intl.city}, {game.intl.country}
+            </span>
+          )}
         </span>
+
         <span
           className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
             favProb >= 0.7

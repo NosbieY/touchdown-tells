@@ -40,12 +40,13 @@ export interface Prediction {
 export function predictGame(game: Game, ratings: Ratings): Prediction {
   const h = ratings[game.home]!;
   const a = ratings[game.away]!;
+  const hfa = game.intl ? 0 : HOME_FIELD_EDGE;
   const expHome = LEAGUE_AVG_SCORE + h.off - a.def;
   const expAway = LEAGUE_AVG_SCORE + a.off - h.def;
-  const margin = expHome - expAway + HOME_FIELD_EDGE;
+  const margin = expHome - expAway + hfa;
   const homeProb = 1 / (1 + Math.pow(10, -margin / 16));
-  const totalHome = expHome + HOME_FIELD_EDGE / 2;
-  const totalAway = expAway - HOME_FIELD_EDGE / 2;
+  const totalHome = expHome + hfa / 2;
+  const totalAway = expAway - hfa / 2;
 
   const favorite = margin >= 0 ? game.home : game.away;
   const underdog = margin >= 0 ? game.away : game.home;
@@ -57,7 +58,9 @@ export function predictGame(game: Game, ratings: Ratings): Prediction {
     reasons.push(`${offEdge > 0 ? game.home : game.away} offense edge (${Math.abs(offEdge).toFixed(1)} pts)`);
   if (Math.abs(defEdge) >= 1)
     reasons.push(`${defEdge > 0 ? game.home : game.away} defense edge (${Math.abs(defEdge).toFixed(1)} pts)`);
-  reasons.push(`${game.home} home field (+${HOME_FIELD_EDGE})`);
+  if (game.intl)
+    reasons.push(`Neutral site — ${game.intl.city}, ${game.intl.country} (no home edge)`);
+  else reasons.push(`${game.home} home field (+${HOME_FIELD_EDGE})`);
   if (Math.abs(margin) < 3) reasons.push("Near pick'em — ratings almost even");
 
   return {
@@ -78,8 +81,9 @@ const K = 0.35;
 export function applyResult(ratings: Ratings, game: Game, result: Result): void {
   const h = ratings[game.home]!;
   const a = ratings[game.away]!;
-  const expHome = LEAGUE_AVG_SCORE + h.off - a.def + HOME_FIELD_EDGE / 2;
-  const expAway = LEAGUE_AVG_SCORE + a.off - h.def - HOME_FIELD_EDGE / 2;
+  const hfa = game.intl ? 0 : HOME_FIELD_EDGE;
+  const expHome = LEAGUE_AVG_SCORE + h.off - a.def + hfa / 2;
+  const expAway = LEAGUE_AVG_SCORE + a.off - h.def - hfa / 2;
 
   const homeScoringResidual = result.homeScore - expHome;
   const awayScoringResidual = result.awayScore - expAway;
@@ -129,7 +133,8 @@ export function upsetWatch(week: number, games: Game[], ratings: Ratings): Upset
     if (underdogProb < 0.3) continue;
 
     const notes: string[] = [];
-    if (p.underdog === game.home) notes.push("underdog at home");
+    if (game.intl) notes.push(`neutral site in ${game.intl.city}`);
+    else if (p.underdog === game.home) notes.push("underdog at home");
     if (Math.abs(p.margin) < 3) notes.push("ratings nearly even");
     const dog = ratings[p.underdog]!;
     const fav = ratings[p.favorite]!;

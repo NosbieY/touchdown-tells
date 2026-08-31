@@ -5,138 +5,287 @@ export interface Game {
   week: number;
   home: string;
   away: string;
+  /** Set for the nine 2026 international games (neutral site). */
+  intl?: { city: string; country: string };
 }
 
-const N = 32;
-const ROUNDS = 18;
-const BYE_WEEKS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14]; // up to 4 teams off each week
-const GAMES_ON_BYE_WEEK = 2; // games removed per bye week
+/** Official 2026-27 NFL regular season slate (18 weeks, 272 games). */
+export const SCHEDULE: Game[] = [
+  { id: "w1-CHI-CAR", week: 1, home: "CAR", away: "CHI" },
+  { id: "w1-TB-CIN", week: 1, home: "CIN", away: "TB" },
+  { id: "w1-NO-DET", week: 1, home: "DET", away: "NO" },
+  { id: "w1-BUF-HOU", week: 1, home: "HOU", away: "BUF" },
+  { id: "w1-BAL-IND", week: 1, home: "IND", away: "BAL" },
+  { id: "w1-CLE-JAX", week: 1, home: "JAX", away: "CLE" },
+  { id: "w1-DEN-KC", week: 1, home: "KC", away: "DEN" },
+  { id: "w1-ARI-LAC", week: 1, home: "LAC", away: "ARI" },
+  { id: "w1-SF-LAR", week: 1, home: "LAR", away: "SF", intl: { city: "Melbourne", country: "Australia" } },
+  { id: "w1-MIA-LV", week: 1, home: "LV", away: "MIA" },
+  { id: "w1-GB-MIN", week: 1, home: "MIN", away: "GB" },
+  { id: "w1-DAL-NYG", week: 1, home: "NYG", away: "DAL" },
+  { id: "w1-WAS-PHI", week: 1, home: "PHI", away: "WAS" },
+  { id: "w1-ATL-PIT", week: 1, home: "PIT", away: "ATL" },
+  { id: "w1-NE-SEA", week: 1, home: "SEA", away: "NE" },
+  { id: "w1-NYJ-TEN", week: 1, home: "TEN", away: "NYJ" },
+  { id: "w2-SEA-ARI", week: 2, home: "ARI", away: "SEA" },
+  { id: "w2-CAR-ATL", week: 2, home: "ATL", away: "CAR" },
+  { id: "w2-NO-BAL", week: 2, home: "BAL", away: "NO" },
+  { id: "w2-DET-BUF", week: 2, home: "BUF", away: "DET" },
+  { id: "w2-MIN-CHI", week: 2, home: "CHI", away: "MIN" },
+  { id: "w2-WAS-DAL", week: 2, home: "DAL", away: "WAS" },
+  { id: "w2-JAX-DEN", week: 2, home: "DEN", away: "JAX" },
+  { id: "w2-CIN-HOU", week: 2, home: "HOU", away: "CIN" },
+  { id: "w2-IND-KC", week: 2, home: "KC", away: "IND" },
+  { id: "w2-LV-LAC", week: 2, home: "LAC", away: "LV" },
+  { id: "w2-NYG-LAR", week: 2, home: "LAR", away: "NYG" },
+  { id: "w2-PIT-NE", week: 2, home: "NE", away: "PIT" },
+  { id: "w2-GB-NYJ", week: 2, home: "NYJ", away: "GB" },
+  { id: "w2-MIA-SF", week: 2, home: "SF", away: "MIA" },
+  { id: "w2-CLE-TB", week: 2, home: "TB", away: "CLE" },
+  { id: "w2-PHI-TEN", week: 2, home: "TEN", away: "PHI" },
+  { id: "w3-LAC-BUF", week: 3, home: "BUF", away: "LAC" },
+  { id: "w3-PHI-CHI", week: 3, home: "CHI", away: "PHI" },
+  { id: "w3-CAR-CLE", week: 3, home: "CLE", away: "CAR" },
+  { id: "w3-BAL-DAL", week: 3, home: "DAL", away: "BAL", intl: { city: "Rio de Janeiro", country: "Brazil" } },
+  { id: "w3-LAR-DEN", week: 3, home: "DEN", away: "LAR" },
+  { id: "w3-NYJ-DET", week: 3, home: "DET", away: "NYJ" },
+  { id: "w3-ATL-GB", week: 3, home: "GB", away: "ATL" },
+  { id: "w3-HOU-IND", week: 3, home: "IND", away: "HOU" },
+  { id: "w3-NE-JAX", week: 3, home: "JAX", away: "NE" },
+  { id: "w3-KC-MIA", week: 3, home: "MIA", away: "KC" },
+  { id: "w3-LV-NO", week: 3, home: "NO", away: "LV" },
+  { id: "w3-TEN-NYG", week: 3, home: "NYG", away: "TEN" },
+  { id: "w3-CIN-PIT", week: 3, home: "PIT", away: "CIN" },
+  { id: "w3-ARI-SF", week: 3, home: "SF", away: "ARI" },
+  { id: "w3-MIN-TB", week: 3, home: "TB", away: "MIN" },
+  { id: "w3-SEA-WAS", week: 3, home: "WAS", away: "SEA" },
+  { id: "w4-TEN-BAL", week: 4, home: "BAL", away: "TEN" },
+  { id: "w4-NE-BUF", week: 4, home: "BUF", away: "NE" },
+  { id: "w4-DET-CAR", week: 4, home: "CAR", away: "DET" },
+  { id: "w4-NYJ-CHI", week: 4, home: "CHI", away: "NYJ" },
+  { id: "w4-JAX-CIN", week: 4, home: "CIN", away: "JAX" },
+  { id: "w4-PIT-CLE", week: 4, home: "CLE", away: "PIT" },
+  { id: "w4-DAL-HOU", week: 4, home: "HOU", away: "DAL" },
+  { id: "w4-KC-LV", week: 4, home: "LV", away: "KC" },
+  { id: "w4-MIA-MIN", week: 4, home: "MIN", away: "MIA" },
+  { id: "w4-ATL-NO", week: 4, home: "NO", away: "ATL" },
+  { id: "w4-ARI-NYG", week: 4, home: "NYG", away: "ARI" },
+  { id: "w4-LAR-PHI", week: 4, home: "PHI", away: "LAR" },
+  { id: "w4-LAC-SEA", week: 4, home: "SEA", away: "LAC" },
+  { id: "w4-DEN-SF", week: 4, home: "SF", away: "DEN" },
+  { id: "w4-GB-TB", week: 4, home: "TB", away: "GB" },
+  { id: "w4-IND-WAS", week: 4, home: "WAS", away: "IND", intl: { city: "London", country: "UK" } },
+  { id: "w5-DET-ARI", week: 5, home: "ARI", away: "DET" },
+  { id: "w5-BAL-ATL", week: 5, home: "ATL", away: "BAL" },
+  { id: "w5-TB-DAL", week: 5, home: "DAL", away: "TB" },
+  { id: "w5-CHI-GB", week: 5, home: "GB", away: "CHI" },
+  { id: "w5-PHI-JAX", week: 5, home: "JAX", away: "PHI", intl: { city: "London", country: "UK" } },
+  { id: "w5-DEN-LAC", week: 5, home: "LAC", away: "DEN" },
+  { id: "w5-BUF-LAR", week: 5, home: "LAR", away: "BUF" },
+  { id: "w5-CIN-MIA", week: 5, home: "MIA", away: "CIN" },
+  { id: "w5-LV-NE", week: 5, home: "NE", away: "LV" },
+  { id: "w5-MIN-NO", week: 5, home: "NO", away: "MIN" },
+  { id: "w5-CLE-NYJ", week: 5, home: "NYJ", away: "CLE" },
+  { id: "w5-IND-PIT", week: 5, home: "PIT", away: "IND" },
+  { id: "w5-SF-SEA", week: 5, home: "SEA", away: "SF" },
+  { id: "w5-HOU-TEN", week: 5, home: "TEN", away: "HOU" },
+  { id: "w5-NYG-WAS", week: 5, home: "WAS", away: "NYG" },
+  { id: "w6-CHI-ATL", week: 6, home: "ATL", away: "CHI" },
+  { id: "w6-BAL-CLE", week: 6, home: "CLE", away: "BAL" },
+  { id: "w6-SEA-DEN", week: 6, home: "DEN", away: "SEA" },
+  { id: "w6-DAL-GB", week: 6, home: "GB", away: "DAL" },
+  { id: "w6-TEN-IND", week: 6, home: "IND", away: "TEN" },
+  { id: "w6-HOU-JAX", week: 6, home: "JAX", away: "HOU", intl: { city: "London", country: "UK" } },
+  { id: "w6-LAC-KC", week: 6, home: "KC", away: "LAC" },
+  { id: "w6-ARI-LAR", week: 6, home: "LAR", away: "ARI" },
+  { id: "w6-BUF-LV", week: 6, home: "LV", away: "BUF" },
+  { id: "w6-NYJ-NE", week: 6, home: "NE", away: "NYJ" },
+  { id: "w6-NO-NYG", week: 6, home: "NYG", away: "NO" },
+  { id: "w6-CAR-PHI", week: 6, home: "PHI", away: "CAR" },
+  { id: "w6-WAS-SF", week: 6, home: "SF", away: "WAS" },
+  { id: "w6-PIT-TB", week: 6, home: "TB", away: "PIT" },
+  { id: "w7-DEN-ARI", week: 7, home: "ARI", away: "DEN" },
+  { id: "w7-SF-ATL", week: 7, home: "ATL", away: "SF" },
+  { id: "w7-CIN-BAL", week: 7, home: "BAL", away: "CIN" },
+  { id: "w7-TB-CAR", week: 7, home: "CAR", away: "TB" },
+  { id: "w7-NE-CHI", week: 7, home: "CHI", away: "NE" },
+  { id: "w7-GB-DET", week: 7, home: "DET", away: "GB" },
+  { id: "w7-NYG-HOU", week: 7, home: "HOU", away: "NYG" },
+  { id: "w7-LAR-LV", week: 7, home: "LV", away: "LAR" },
+  { id: "w7-IND-MIN", week: 7, home: "MIN", away: "IND" },
+  { id: "w7-PIT-NO", week: 7, home: "NO", away: "PIT", intl: { city: "Paris", country: "France" } },
+  { id: "w7-MIA-NYJ", week: 7, home: "NYJ", away: "MIA" },
+  { id: "w7-DAL-PHI", week: 7, home: "PHI", away: "DAL" },
+  { id: "w7-KC-SEA", week: 7, home: "SEA", away: "KC" },
+  { id: "w7-CLE-TEN", week: 7, home: "TEN", away: "CLE" },
+  { id: "w8-BAL-BUF", week: 8, home: "BUF", away: "BAL" },
+  { id: "w8-TEN-CIN", week: 8, home: "CIN", away: "TEN" },
+  { id: "w8-ARI-DAL", week: 8, home: "DAL", away: "ARI" },
+  { id: "w8-KC-DEN", week: 8, home: "DEN", away: "KC" },
+  { id: "w8-MIN-DET", week: 8, home: "DET", away: "MIN" },
+  { id: "w8-CAR-GB", week: 8, home: "GB", away: "CAR" },
+  { id: "w8-IND-JAX", week: 8, home: "JAX", away: "IND" },
+  { id: "w8-LAC-LAR", week: 8, home: "LAR", away: "LAC" },
+  { id: "w8-NE-MIA", week: 8, home: "MIA", away: "NE" },
+  { id: "w8-LV-NYJ", week: 8, home: "NYJ", away: "LV" },
+  { id: "w8-CLE-PIT", week: 8, home: "PIT", away: "CLE" },
+  { id: "w8-CHI-SEA", week: 8, home: "SEA", away: "CHI" },
+  { id: "w8-ATL-TB", week: 8, home: "TB", away: "ATL" },
+  { id: "w8-PHI-WAS", week: 8, home: "WAS", away: "PHI" },
+  { id: "w9-CIN-ATL", week: 9, home: "ATL", away: "CIN", intl: { city: "Madrid", country: "Spain" } },
+  { id: "w9-JAX-BAL", week: 9, home: "BAL", away: "JAX" },
+  { id: "w9-DEN-CAR", week: 9, home: "CAR", away: "DEN" },
+  { id: "w9-TB-CHI", week: 9, home: "CHI", away: "TB" },
+  { id: "w9-DAL-IND", week: 9, home: "IND", away: "DAL" },
+  { id: "w9-NYJ-KC", week: 9, home: "KC", away: "NYJ" },
+  { id: "w9-HOU-LAC", week: 9, home: "LAC", away: "HOU" },
+  { id: "w9-DET-MIA", week: 9, home: "MIA", away: "DET" },
+  { id: "w9-BUF-MIN", week: 9, home: "MIN", away: "BUF" },
+  { id: "w9-GB-NE", week: 9, home: "NE", away: "GB" },
+  { id: "w9-CLE-NO", week: 9, home: "NO", away: "CLE" },
+  { id: "w9-NYG-PHI", week: 9, home: "PHI", away: "NYG" },
+  { id: "w9-ARI-SEA", week: 9, home: "SEA", away: "ARI" },
+  { id: "w9-LV-SF", week: 9, home: "SF", away: "LV" },
+  { id: "w9-LAR-WAS", week: 9, home: "WAS", away: "LAR" },
+  { id: "w10-LAR-ARI", week: 10, home: "ARI", away: "LAR" },
+  { id: "w10-KC-ATL", week: 10, home: "ATL", away: "KC" },
+  { id: "w10-LAC-BAL", week: 10, home: "BAL", away: "LAC" },
+  { id: "w10-PIT-CIN", week: 10, home: "CIN", away: "PIT" },
+  { id: "w10-HOU-CLE", week: 10, home: "CLE", away: "HOU" },
+  { id: "w10-SF-DAL", week: 10, home: "DAL", away: "SF" },
+  { id: "w10-NE-DET", week: 10, home: "DET", away: "NE", intl: { city: "Munich", country: "Germany" } },
+  { id: "w10-MIN-GB", week: 10, home: "GB", away: "MIN" },
+  { id: "w10-MIA-IND", week: 10, home: "IND", away: "MIA" },
+  { id: "w10-SEA-LV", week: 10, home: "LV", away: "SEA" },
+  { id: "w10-CAR-NO", week: 10, home: "NO", away: "CAR" },
+  { id: "w10-WAS-NYG", week: 10, home: "NYG", away: "WAS" },
+  { id: "w10-BUF-NYJ", week: 10, home: "NYJ", away: "BUF" },
+  { id: "w10-JAX-TEN", week: 10, home: "TEN", away: "JAX" },
+  { id: "w11-MIA-BUF", week: 11, home: "BUF", away: "MIA" },
+  { id: "w11-BAL-CAR", week: 11, home: "CAR", away: "BAL" },
+  { id: "w11-NO-CHI", week: 11, home: "CHI", away: "NO" },
+  { id: "w11-TEN-DAL", week: 11, home: "DAL", away: "TEN" },
+  { id: "w11-LV-DEN", week: 11, home: "DEN", away: "LV" },
+  { id: "w11-TB-DET", week: 11, home: "DET", away: "TB" },
+  { id: "w11-IND-HOU", week: 11, home: "HOU", away: "IND" },
+  { id: "w11-ARI-KC", week: 11, home: "KC", away: "ARI" },
+  { id: "w11-NYJ-LAC", week: 11, home: "LAC", away: "NYJ" },
+  { id: "w11-JAX-NYG", week: 11, home: "NYG", away: "JAX" },
+  { id: "w11-PIT-PHI", week: 11, home: "PHI", away: "PIT" },
+  { id: "w11-MIN-SF", week: 11, home: "SF", away: "MIN", intl: { city: "Mexico City", country: "Mexico" } },
+  { id: "w11-CIN-WAS", week: 11, home: "WAS", away: "CIN" },
+  { id: "w12-WAS-ARI", week: 12, home: "ARI", away: "WAS" },
+  { id: "w12-KC-BUF", week: 12, home: "BUF", away: "KC" },
+  { id: "w12-NO-CIN", week: 12, home: "CIN", away: "NO" },
+  { id: "w12-LV-CLE", week: 12, home: "CLE", away: "LV" },
+  { id: "w12-PHI-DAL", week: 12, home: "DAL", away: "PHI" },
+  { id: "w12-CHI-DET", week: 12, home: "DET", away: "CHI" },
+  { id: "w12-BAL-HOU", week: 12, home: "HOU", away: "BAL" },
+  { id: "w12-NYG-IND", week: 12, home: "IND", away: "NYG" },
+  { id: "w12-TEN-JAX", week: 12, home: "JAX", away: "TEN" },
+  { id: "w12-NE-LAC", week: 12, home: "LAC", away: "NE" },
+  { id: "w12-GB-LAR", week: 12, home: "LAR", away: "GB" },
+  { id: "w12-NYJ-MIA", week: 12, home: "MIA", away: "NYJ" },
+  { id: "w12-ATL-MIN", week: 12, home: "MIN", away: "ATL" },
+  { id: "w12-DEN-PIT", week: 12, home: "PIT", away: "DEN" },
+  { id: "w12-SEA-SF", week: 12, home: "SF", away: "SEA" },
+  { id: "w12-CAR-TB", week: 12, home: "TB", away: "CAR" },
+  { id: "w13-PHI-ARI", week: 13, home: "ARI", away: "PHI" },
+  { id: "w13-DET-ATL", week: 13, home: "ATL", away: "DET" },
+  { id: "w13-JAX-CHI", week: 13, home: "CHI", away: "JAX" },
+  { id: "w13-CIN-CLE", week: 13, home: "CLE", away: "CIN" },
+  { id: "w13-MIA-DEN", week: 13, home: "DEN", away: "MIA" },
+  { id: "w13-KC-LAR", week: 13, home: "LAR", away: "KC" },
+  { id: "w13-CAR-MIN", week: 13, home: "MIN", away: "CAR" },
+  { id: "w13-BUF-NE", week: 13, home: "NE", away: "BUF" },
+  { id: "w13-GB-NO", week: 13, home: "NO", away: "GB" },
+  { id: "w13-SF-NYG", week: 13, home: "NYG", away: "SF" },
+  { id: "w13-HOU-PIT", week: 13, home: "PIT", away: "HOU" },
+  { id: "w13-DAL-SEA", week: 13, home: "SEA", away: "DAL" },
+  { id: "w13-LAC-TB", week: 13, home: "TB", away: "LAC" },
+  { id: "w13-WAS-TEN", week: 13, home: "TEN", away: "WAS" },
+  { id: "w14-TB-BAL", week: 14, home: "BAL", away: "TB" },
+  { id: "w14-NO-CAR", week: 14, home: "CAR", away: "NO" },
+  { id: "w14-KC-CIN", week: 14, home: "CIN", away: "KC" },
+  { id: "w14-ATL-CLE", week: 14, home: "CLE", away: "ATL" },
+  { id: "w14-TEN-DET", week: 14, home: "DET", away: "TEN" },
+  { id: "w14-BUF-GB", week: 14, home: "GB", away: "BUF" },
+  { id: "w14-PIT-JAX", week: 14, home: "JAX", away: "PIT" },
+  { id: "w14-LAC-LV", week: 14, home: "LV", away: "LAC" },
+  { id: "w14-CHI-MIA", week: 14, home: "MIA", away: "CHI" },
+  { id: "w14-MIN-NE", week: 14, home: "NE", away: "MIN" },
+  { id: "w14-DEN-NYJ", week: 14, home: "NYJ", away: "DEN" },
+  { id: "w14-IND-PHI", week: 14, home: "PHI", away: "IND" },
+  { id: "w14-NYG-SEA", week: 14, home: "SEA", away: "NYG" },
+  { id: "w14-LAR-SF", week: 14, home: "SF", away: "LAR" },
+  { id: "w14-HOU-WAS", week: 14, home: "WAS", away: "HOU" },
+  { id: "w15-NYJ-ARI", week: 15, home: "ARI", away: "NYJ" },
+  { id: "w15-CHI-BUF", week: 15, home: "BUF", away: "CHI" },
+  { id: "w15-CIN-CAR", week: 15, home: "CAR", away: "CIN" },
+  { id: "w15-MIA-GB", week: 15, home: "GB", away: "MIA" },
+  { id: "w15-JAX-HOU", week: 15, home: "HOU", away: "JAX" },
+  { id: "w15-NE-KC", week: 15, home: "KC", away: "NE" },
+  { id: "w15-SF-LAC", week: 15, home: "LAC", away: "SF" },
+  { id: "w15-DAL-LAR", week: 15, home: "LAR", away: "DAL" },
+  { id: "w15-DEN-LV", week: 15, home: "LV", away: "DEN" },
+  { id: "w15-DET-MIN", week: 15, home: "MIN", away: "DET" },
+  { id: "w15-CLE-NYG", week: 15, home: "NYG", away: "CLE" },
+  { id: "w15-SEA-PHI", week: 15, home: "PHI", away: "SEA" },
+  { id: "w15-BAL-PIT", week: 15, home: "PIT", away: "BAL" },
+  { id: "w15-NO-TB", week: 15, home: "TB", away: "NO" },
+  { id: "w15-IND-TEN", week: 15, home: "TEN", away: "IND" },
+  { id: "w15-ATL-WAS", week: 15, home: "WAS", away: "ATL" },
+  { id: "w16-TB-ATL", week: 16, home: "ATL", away: "TB" },
+  { id: "w16-CLE-BAL", week: 16, home: "BAL", away: "CLE" },
+  { id: "w16-GB-CHI", week: 16, home: "CHI", away: "GB" },
+  { id: "w16-JAX-DAL", week: 16, home: "DAL", away: "JAX" },
+  { id: "w16-BUF-DEN", week: 16, home: "DEN", away: "BUF" },
+  { id: "w16-NYG-DET", week: 16, home: "DET", away: "NYG" },
+  { id: "w16-CIN-IND", week: 16, home: "IND", away: "CIN" },
+  { id: "w16-SF-KC", week: 16, home: "KC", away: "SF" },
+  { id: "w16-TEN-LV", week: 16, home: "LV", away: "TEN" },
+  { id: "w16-LAC-MIA", week: 16, home: "MIA", away: "LAC" },
+  { id: "w16-WAS-MIN", week: 16, home: "MIN", away: "WAS" },
+  { id: "w16-ARI-NO", week: 16, home: "NO", away: "ARI" },
+  { id: "w16-NE-NYJ", week: 16, home: "NYJ", away: "NE" },
+  { id: "w16-HOU-PHI", week: 16, home: "PHI", away: "HOU" },
+  { id: "w16-CAR-PIT", week: 16, home: "PIT", away: "CAR" },
+  { id: "w16-LAR-SEA", week: 16, home: "SEA", away: "LAR" },
+  { id: "w17-LV-ARI", week: 17, home: "ARI", away: "LV" },
+  { id: "w17-NO-ATL", week: 17, home: "ATL", away: "NO" },
+  { id: "w17-SEA-CAR", week: 17, home: "CAR", away: "SEA" },
+  { id: "w17-DET-CHI", week: 17, home: "CHI", away: "DET" },
+  { id: "w17-BAL-CIN", week: 17, home: "CIN", away: "BAL" },
+  { id: "w17-IND-CLE", week: 17, home: "CLE", away: "IND" },
+  { id: "w17-NYG-DAL", week: 17, home: "DAL", away: "NYG" },
+  { id: "w17-HOU-GB", week: 17, home: "GB", away: "HOU" },
+  { id: "w17-WAS-JAX", week: 17, home: "JAX", away: "WAS" },
+  { id: "w17-KC-LAC", week: 17, home: "LAC", away: "KC" },
+  { id: "w17-BUF-MIA", week: 17, home: "MIA", away: "BUF" },
+  { id: "w17-DEN-NE", week: 17, home: "NE", away: "DEN" },
+  { id: "w17-MIN-NYJ", week: 17, home: "NYJ", away: "MIN" },
+  { id: "w17-PHI-SF", week: 17, home: "SF", away: "PHI" },
+  { id: "w17-LAR-TB", week: 17, home: "TB", away: "LAR" },
+  { id: "w17-PIT-TEN", week: 17, home: "TEN", away: "PIT" },
+  { id: "w18-SF-ARI", week: 18, home: "ARI", away: "SF" },
+  { id: "w18-PIT-BAL", week: 18, home: "BAL", away: "PIT" },
+  { id: "w18-NYJ-BUF", week: 18, home: "BUF", away: "NYJ" },
+  { id: "w18-ATL-CAR", week: 18, home: "CAR", away: "ATL" },
+  { id: "w18-CLE-CIN", week: 18, home: "CIN", away: "CLE" },
+  { id: "w18-LAC-DEN", week: 18, home: "DEN", away: "LAC" },
+  { id: "w18-DET-GB", week: 18, home: "GB", away: "DET" },
+  { id: "w18-TEN-HOU", week: 18, home: "HOU", away: "TEN" },
+  { id: "w18-JAX-IND", week: 18, home: "IND", away: "JAX" },
+  { id: "w18-LV-KC", week: 18, home: "KC", away: "LV" },
+  { id: "w18-SEA-LAR", week: 18, home: "LAR", away: "SEA" },
+  { id: "w18-CHI-MIN", week: 18, home: "MIN", away: "CHI" },
+  { id: "w18-MIA-NE", week: 18, home: "NE", away: "MIA" },
+  { id: "w18-TB-NO", week: 18, home: "NO", away: "TB" },
+  { id: "w18-PHI-NYG", week: 18, home: "NYG", away: "PHI" },
+  { id: "w18-DAL-WAS", week: 18, home: "WAS", away: "DAL" },
+];
 
-/**
- * Builds a structurally valid 18-week slate: circle-method round robin
- * (no repeat matchups), one bye per team in weeks 5-12, balanced home/away.
- * Deterministic via seeded shuffle so the app renders the same schedule
- * on every load.
- */
-function mulberry32(seed: number) {
-  return () => {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-interface RawGame {
-  a: number;
-  b: number;
-}
-
-function circleRounds(): RawGame[][] {
-  const fixed = 0;
-  const rest = Array.from({ length: N - 1 }, (_, i) => i + 1);
-  const rounds: RawGame[][] = [];
-  for (let r = 0; r < ROUNDS; r++) {
-    const rot = rest.map((_, i) => rest[(i + r) % rest.length]!);
-    const games: RawGame[] = [{ a: fixed, b: rot[0]! }];
-    for (let i = 1; i <= (N - 2) / 2; i++) {
-      games.push({ a: rot[i]!, b: rot[rot.length - i]! });
-    }
-    rounds.push(games);
-  }
-  return rounds;
-}
-
-/**
- * Pick 16 disjoint games in the bye weeks to remove (one bye per team,
- * at most 2 removed games per week). Seeded greedy with retries.
- */
-function assignByes(rounds: RawGame[][], baseSeed: number): Set<string> {
-  const key = (w: number, g: RawGame) => `${w}:${g.a}-${g.b}`;
-  for (let seed = baseSeed; seed < baseSeed + 5000; seed++) {
-    const rand = mulberry32(seed);
-    const removed = new Set<string>();
-    const byed = new Set<number>();
-    const perWeek = new Map<number, number>();
-    const order = Array.from({ length: N }, (_, i) => i).sort(() => rand() - 0.5);
-    let failed = false;
-
-    for (const team of order) {
-      if (byed.has(team)) continue;
-      const candidates: { w: number; g: RawGame }[] = [];
-      for (const bw of BYE_WEEKS) {
-        const w = bw - 1;
-        if ((perWeek.get(w) ?? 0) >= GAMES_ON_BYE_WEEK) continue;
-        for (const g of rounds[w]!) {
-          if (g.a !== team && g.b !== team) continue;
-          const other = g.a === team ? g.b : g.a;
-          if (!byed.has(other)) candidates.push({ w, g });
-        }
-      }
-      if (candidates.length === 0) {
-        failed = true;
-        break;
-      }
-      const pick = candidates[Math.floor(rand() * candidates.length)]!;
-      removed.add(key(pick.w, pick.g));
-      byed.add(pick.g.a);
-      byed.add(pick.g.b);
-      perWeek.set(pick.w, (perWeek.get(pick.w) ?? 0) + 1);
-    }
-    if (!failed && byed.size === N) return removed;
-  }
-  throw new Error("bye assignment failed");
-}
-
-function buildSchedule(): Game[] {
-  const games: Game[] = [];
-  const removed = assignByes(circleRounds(), 20260904);
-  const rounds = circleRounds();
-  const homeCount = new Array(N).fill(0);
-  const abbr = TEAMS.map((t) => t.abbr);
-
-  for (let w = 0; w < ROUNDS; w++) {
-    for (const g of rounds[w]!) {
-      const k = `${w}:${g.a}-${g.b}`;
-      if (removed.has(k)) continue;
-      // Home team = the one with fewer home games so far (ties: lower index).
-      const homeIdx =
-        homeCount[g.a] === homeCount[g.b]
-          ? g.a
-          : homeCount[g.a] < homeCount[g.b]
-            ? g.a
-            : g.b;
-      const awayIdx = homeIdx === g.a ? g.b : g.a;
-      homeCount[homeIdx]++;
-      games.push({
-        id: `w${w + 1}-${abbr[awayIdx]!}@${abbr[homeIdx]!}`,
-        week: w + 1,
-        home: abbr[homeIdx]!,
-        away: abbr[awayIdx]!,
-      });
-    }
-  }
-
-  // Sanity checks — throw loudly at build time if the slate is invalid.
-  const played = new Map<string, number>();
-  const seenPairs = new Set<string>();
-  for (const g of games) {
-    played.set(g.home, (played.get(g.home) ?? 0) + 1);
-    played.set(g.away, (played.get(g.away) ?? 0) + 1);
-    const pair = [g.home, g.away].sort().join("-");
-    if (seenPairs.has(pair)) throw new Error(`repeat matchup ${pair}`);
-    seenPairs.add(pair);
-  }
-  for (const t of TEAMS) {
-    if (played.get(t.abbr) !== 17)
-      throw new Error(`${t.abbr} has ${played.get(t.abbr)} games`);
-  }
-  return games;
-}
-
-export const SCHEDULE: Game[] = buildSchedule();
-export const WEEKS = Array.from({ length: ROUNDS }, (_, i) => i + 1);
+export const WEEKS = Array.from({ length: 18 }, (_, i) => i + 1);
 
 export function gamesForWeek(week: number): Game[] {
   return SCHEDULE.filter((g) => g.week === week);
