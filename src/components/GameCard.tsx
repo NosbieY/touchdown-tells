@@ -50,7 +50,7 @@ function TeamRow({
   );
 }
 
-export function GameCard({ game, prediction, result, onSaveResult, onClearResult }: Props) {
+export function GameCard({ game, prediction, result, market, onSaveResult, onClearResult }: Props) {
   const [editing, setEditing] = useState(false);
   const [homeScore, setHomeScore] = useState(result ? String(result.homeScore) : "");
   const [awayScore, setAwayScore] = useState(result ? String(result.awayScore) : "");
