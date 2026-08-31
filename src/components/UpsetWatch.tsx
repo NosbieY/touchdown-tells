@@ -17,8 +17,8 @@ export function UpsetWatch({ upsets }: { upsets: UpsetCandidate[] }) {
       ) : (
         <div className="space-y-3">
           {upsets.map((u, i) => {
-            const dog = TEAM_MAP[u.prediction.underdog];
-            const fav = TEAM_MAP[u.prediction.favorite];
+            const dog = TEAM_MAP[u.prediction.underdog]!;
+            const fav = TEAM_MAP[u.prediction.favorite]!;
             return (
               <div
                 key={u.game.id}

@@ -38,10 +38,10 @@ function circleRounds(): RawGame[][] {
   const rest = Array.from({ length: N - 1 }, (_, i) => i + 1);
   const rounds: RawGame[][] = [];
   for (let r = 0; r < ROUNDS; r++) {
-    const rot = rest.map((_, i) => rest[(i + r) % rest.length]);
-    const games: RawGame[] = [{ a: fixed, b: rot[0] }];
+    const rot = rest.map((_, i) => rest[(i + r) % rest.length]!);
+    const games: RawGame[] = [{ a: fixed, b: rot[0]! }];
     for (let i = 1; i <= (N - 2) / 2; i++) {
-      games.push({ a: rot[i], b: rot[rot.length - i] });
+      games.push({ a: rot[i]!, b: rot[rot.length - i]! });
     }
     rounds.push(games);
   }
@@ -68,7 +68,7 @@ function assignByes(rounds: RawGame[][], baseSeed: number): Set<string> {
       for (const bw of BYE_WEEKS) {
         const w = bw - 1;
         if ((perWeek.get(w) ?? 0) >= GAMES_ON_BYE_WEEK) continue;
-        for (const g of rounds[w]) {
+        for (const g of rounds[w]!) {
           if (g.a !== team && g.b !== team) continue;
           const other = g.a === team ? g.b : g.a;
           if (!byed.has(other)) candidates.push({ w, g });
@@ -78,7 +78,7 @@ function assignByes(rounds: RawGame[][], baseSeed: number): Set<string> {
         failed = true;
         break;
       }
-      const pick = candidates[Math.floor(rand() * candidates.length)];
+      const pick = candidates[Math.floor(rand() * candidates.length)]!;
       removed.add(key(pick.w, pick.g));
       byed.add(pick.g.a);
       byed.add(pick.g.b);
@@ -97,7 +97,7 @@ function buildSchedule(): Game[] {
   const abbr = TEAMS.map((t) => t.abbr);
 
   for (let w = 0; w < ROUNDS; w++) {
-    for (const g of rounds[w]) {
+    for (const g of rounds[w]!) {
       const k = `${w}:${g.a}-${g.b}`;
       if (removed.has(k)) continue;
       // Home team = the one with fewer home games so far (ties: lower index).
@@ -110,10 +110,10 @@ function buildSchedule(): Game[] {
       const awayIdx = homeIdx === g.a ? g.b : g.a;
       homeCount[homeIdx]++;
       games.push({
-        id: `w${w + 1}-${abbr[awayIdx]}@${abbr[homeIdx]}`,
+        id: `w${w + 1}-${abbr[awayIdx]!}@${abbr[homeIdx]!}`,
         week: w + 1,
-        home: abbr[homeIdx],
-        away: abbr[awayIdx],
+        home: abbr[homeIdx]!,
+        away: abbr[awayIdx]!,
       });
     }
   }
