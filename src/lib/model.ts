@@ -1,5 +1,6 @@
 import { LEAGUE_AVG_SCORE, HOME_FIELD_EDGE, TEAM_MAP } from "@/data/teams";
 import { SCHEDULE, type Game } from "@/data/schedule";
+import { pairKey, type MarketLines } from "@/lib/kalshi.functions";
 
 export interface Rating {
   off: number;
@@ -120,30 +121,67 @@ export function finalRatings(
 export interface UpsetCandidate {
   game: Game;
   prediction: Prediction;
+  favorite: string;
+  underdog: string;
   underdogProb: number;
+  source: "market" | "model";
   note: string;
 }
 
-/** Underdogs with at least ~30% win probability, ranked by probability. */
-export function upsetWatch(week: number, games: Game[], ratings: Ratings): UpsetCandidate[] {
+/**
+ * Underdogs with at least ~30% win probability, ranked by probability.
+ * When a Kalshi market line exists for a game, the favorite/underdog and
+ * probability come from the market (the real-money consensus) rather than
+ * our internal rating model, so Upset Watch never contradicts Kalshi.
+ * Games with no market line fall back to the model's own prediction.
+ */
+export function upsetWatch(
+  week: number,
+  games: Game[],
+  ratings: Ratings,
+  market?: MarketLines,
+): UpsetCandidate[] {
   const candidates: UpsetCandidate[] = [];
   for (const game of games) {
     const p = predictGame(game, ratings);
-    const underdogProb = p.favorite === game.home ? p.awayProb : p.homeProb;
+    const line = market?.[pairKey(game.home, game.away)];
+
+    let favorite: string;
+    let underdog: string;
+    let underdogProb: number;
+    let source: "market" | "model";
+
+    if (line) {
+      favorite = line.favorite;
+      underdog = line.underdog;
+      underdogProb = line.probs[underdog] ?? 1 - Math.max(...Object.values(line.probs));
+      source = "market";
+    } else {
+      favorite = p.favorite;
+      underdog = p.underdog;
+      underdogProb = p.favorite === game.home ? p.awayProb : p.homeProb;
+      source = "model";
+    }
+
     if (underdogProb < 0.3) continue;
 
     const notes: string[] = [];
     if (game.intl) notes.push(`neutral site in ${game.intl.city}`);
-    else if (p.underdog === game.home) notes.push("underdog at home");
-    if (Math.abs(p.margin) < 3) notes.push("ratings nearly even");
-    const dog = ratings[p.underdog]!;
-    const fav = ratings[p.favorite]!;
+    else if (underdog === game.home) notes.push("underdog at home");
+    if (source === "market" && favorite !== p.favorite)
+      notes.push("our model actually favors the other side");
+    else if (Math.abs(p.margin) < 3) notes.push("ratings nearly even");
+    const dog = ratings[underdog]!;
+    const fav = ratings[favorite]!;
     if (dog.def > fav.def + 1) notes.push("underdog has the better defense");
     if (dog.off > fav.off) notes.push("underdog actually grades out better on offense");
     candidates.push({
       game,
       prediction: p,
+      favorite,
+      underdog,
       underdogProb,
+      source,
       note: notes.length ? notes.join(" · ") : "live underdog",
     });
   }
