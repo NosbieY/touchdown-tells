@@ -146,6 +146,62 @@ export function GameCard({ game, prediction, result, market, onSaveResult, onCle
         {prediction.reasons.join(" · ")}
       </p>
 
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="mt-3 flex w-full items-center justify-between rounded-md bg-secondary/60 px-3 py-2 text-xs font-semibold tracking-wide uppercase hover:bg-secondary"
+      >
+        Why {winner} wins — deep dive
+        <ChevronDown
+          className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="mt-2 rounded-md border border-border p-3">
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {matchupSummary(game.away, game.home, winner, edges)}
+          </p>
+          <div className="mt-3 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-2 text-xs">
+            <span className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+              Metric
+            </span>
+            <span className="text-right text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+              {game.away}
+            </span>
+            <span className="text-right text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+              {game.home}
+            </span>
+            {edges.map((e) => (
+              <div key={e.label} className="col-span-3 grid grid-cols-[1fr_auto_auto] gap-x-3">
+                <div>
+                  <div className="font-medium text-foreground">{e.label}</div>
+                  <div className="text-[11px] text-muted-foreground">{e.detail}</div>
+                </div>
+                <span
+                  className={`tabular-nums ${
+                    e.edge === game.away ? "font-bold text-chart-2" : "text-muted-foreground"
+                  }`}
+                >
+                  {e.awayValue}
+                </span>
+                <span
+                  className={`tabular-nums ${
+                    e.edge === game.home ? "font-bold text-chart-2" : "text-muted-foreground"
+                  }`}
+                >
+                  {e.homeValue}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            Source: 2025 regular-season advanced team metrics (EPA per play, success rate,
+            situational splits).
+          </p>
+        </div>
+      )}
+
       {result && !editing ? (
         <div className="mt-3 flex items-center justify-between rounded-md bg-secondary px-3 py-2 text-sm">
           <span>
