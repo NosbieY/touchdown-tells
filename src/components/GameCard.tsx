@@ -54,6 +54,9 @@ function TeamRow({
 
 export function GameCard({ game, prediction, result, market, onSaveResult, onClearResult }: Props) {
   const [editing, setEditing] = useState(false);
+  const [open, setOpen] = useState(false);
+  const winner = market?.favorite ?? prediction.favorite;
+  const edges = matchupEdges(game.away, game.home);
   const [homeScore, setHomeScore] = useState(result ? String(result.homeScore) : "");
   const [awayScore, setAwayScore] = useState(result ? String(result.awayScore) : "");
 
