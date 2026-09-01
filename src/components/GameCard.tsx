@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { matchupEdges, matchupSummary } from "@/lib/matchup";
 import { TEAM_MAP } from "@/data/teams";
 import type { Game } from "@/data/schedule";
 import type { Prediction, Result } from "@/lib/model";
