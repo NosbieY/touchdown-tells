@@ -48,16 +48,16 @@ function Index() {
     [ready, week, results, overrides],
   );
   const games = useMemo(() => gamesForWeek(week), [week]);
-  const upsets = useMemo(
-    () => (ratings ? upsetWatch(week, games, ratings) : []),
-    [ratings, week, games],
-  );
   const { data: kalshi } = useQuery({
     queryKey: ["kalshi-lines"],
     queryFn: () => getKalshiLines(),
     staleTime: 60_000,
     refetchInterval: 120_000,
   });
+  const upsets = useMemo(
+    () => (ratings ? upsetWatch(week, games, ratings, kalshi?.lines) : []),
+    [ratings, week, games, kalshi],
+  );
   const marketCount = kalshi ? Object.keys(kalshi.lines).length : 0;
 
   const tableRatings = useMemo(
