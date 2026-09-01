@@ -136,7 +136,7 @@ export interface UpsetCandidate {
  * Games with no market line fall back to the model's own prediction.
  */
 export function upsetWatch(
-  week: number,
+  _week: number,
   games: Game[],
   ratings: Ratings,
   market?: MarketLines,

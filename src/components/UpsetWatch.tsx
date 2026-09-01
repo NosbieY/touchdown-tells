@@ -8,6 +8,9 @@ export function UpsetWatch({ upsets }: { upsets: UpsetCandidate[] }) {
       <div className="mb-4 flex items-center gap-2">
         <AlertTriangle className="h-5 w-5 text-chart-4" />
         <h2 className="font-display text-2xl font-bold tracking-wide">Upset Watch</h2>
+        <span className="text-xs text-muted-foreground">
+          Kalshi market lines where available
+        </span>
       </div>
 
       {upsets.length === 0 ? (
@@ -17,8 +20,8 @@ export function UpsetWatch({ upsets }: { upsets: UpsetCandidate[] }) {
       ) : (
         <div className="space-y-3">
           {upsets.map((u, i) => {
-            const dog = TEAM_MAP[u.prediction.underdog]!;
-            const fav = TEAM_MAP[u.prediction.favorite]!;
+            const dog = TEAM_MAP[u.underdog]!;
+            const fav = TEAM_MAP[u.favorite]!;
             return (
               <div
                 key={u.game.id}
@@ -34,13 +37,22 @@ export function UpsetWatch({ upsets }: { upsets: UpsetCandidate[] }) {
                       Upset alert
                     </span>
                   )}
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-widest uppercase ${
+                      u.source === "market"
+                        ? "bg-primary/15 text-primary"
+                        : "bg-secondary text-muted-foreground"
+                    }`}
+                  >
+                    {u.source === "market" ? "Kalshi" : "Model"}
+                  </span>
                   <span className="font-display text-lg font-bold tracking-wide">
                     <span style={{ color: dog.color }} className="brightness-150">
-                      {u.prediction.underdog}
+                      {u.underdog}
                     </span>{" "}
                     over{" "}
                     <span style={{ color: fav.color }} className="brightness-150">
-                      {u.prediction.favorite}
+                      {u.favorite}
                     </span>
                   </span>
                   <span className="ml-auto font-display text-2xl font-bold tabular-nums text-chart-4">
@@ -54,9 +66,11 @@ export function UpsetWatch({ upsets }: { upsets: UpsetCandidate[] }) {
                   />
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {dog.city} {dog.name} · {u.note} · projected{" "}
-                  {u.prediction.projAway.toFixed(0)}–{u.prediction.projHome.toFixed(0)}{" "}
-                  {u.game.home === u.prediction.underdog ? "(home dog)" : ""}
+                  {dog.city} {dog.name} · {u.note} ·{" "}
+                  {u.source === "market"
+                    ? `${u.favorite} favored at ${((1 - u.underdogProb) * 100).toFixed(0)}% on Kalshi`
+                    : `model projects ${u.prediction.projAway.toFixed(0)}–${u.prediction.projHome.toFixed(0)}`}
+                  {u.game.home === u.underdog ? " (home dog)" : ""}
                 </p>
               </div>
             );
